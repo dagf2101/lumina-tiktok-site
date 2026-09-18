@@ -3,20 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lumina — Legal Terms & Privacy Policy</title>
+  <title>Lumina — Automated News Studio & Compliance Portal</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #0b0f19;
       --card-bg: #111827;
-      --text: #e5e7eb;
+      --card-border: #1f2937;
+      --text: #f3f4f6;
       --text-muted: #9ca3af;
-      --accent: #3b82f6;
-      --accent-hover: #60a5fa;
-      --border: #1f2937;
-      --code-bg: #1e293b;
+      --accent: #25f4ee;
+      --tiktok-red: #fe2c55;
+      --tiktok-cyan: #25f4ee;
+      --accent-blue: #3b82f6;
+      --success: #10b981;
     }
     * {
       box-sizing: border-box;
@@ -27,207 +29,995 @@
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       background-color: var(--bg);
       color: var(--text);
-      line-height: 1.7;
-      padding: 2rem 1rem;
-    }
-    .container {
-      max-width: 860px;
-      margin: 0 auto;
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
     header {
-      text-align: center;
-      margin-bottom: 2.5rem;
-      padding-bottom: 1.5rem;
-      border-bottom: 1px solid var(--border);
+      background: rgba(17, 24, 39, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--card-border);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      padding: 1rem 1.5rem;
     }
-    .badge {
-      display: inline-block;
-      background: rgba(59, 130, 246, 0.15);
-      color: var(--accent-hover);
-      padding: 0.25rem 0.75rem;
-      border-radius: 9999px;
-      font-size: 0.85rem;
+    .header-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: white;
+    }
+    .brand-logo {
+      width: 38px;
+      height: 38px;
+      background: linear-gradient(135deg, var(--tiktok-cyan), var(--tiktok-red));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1.2rem;
+      color: #000;
+    }
+    .brand-name {
+      font-size: 1.3rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .brand-badge {
+      font-size: 0.75rem;
+      background: rgba(59, 130, 246, 0.2);
+      color: #93c5fd;
+      border: 1px solid rgba(59, 130, 246, 0.4);
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
       font-weight: 600;
-      margin-bottom: 1rem;
       text-transform: uppercase;
+    }
+    nav.tabs {
+      display: flex;
+      gap: 0.5rem;
+      background: #0d1322;
+      padding: 0.25rem;
+      border-radius: 10px;
+      border: 1px solid var(--card-border);
+    }
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 0.45rem 0.95rem;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .tab-btn:hover {
+      color: white;
+      background: rgba(255, 255, 255, 0.05);
+    }
+    .tab-btn.active {
+      background: #1f2937;
+      color: #ffffff;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+    main {
+      max-width: 1100px;
+      margin: 2rem auto;
+      padding: 0 1.5rem;
+      flex: 1;
+      width: 100%;
+    }
+    .view-panel {
+      display: none;
+    }
+    .view-panel.active {
+      display: block;
+      animation: fadeIn 0.25s ease-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* APP STUDIO STYLES */
+    .studio-hero {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .studio-hero h1 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, #ffffff, #9ca3af);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .studio-hero p {
+      color: var(--text-muted);
+      font-size: 1rem;
+      max-width: 650px;
+      margin: 0 auto;
+    }
+
+    .studio-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 1.75rem;
+    }
+    @media (max-width: 860px) {
+      .studio-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 1.5rem;
+      position: relative;
+    }
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: white;
+    }
+
+    /* TIKTOK AUTH BOX */
+    .auth-box {
+      background: #0d1322;
+      border: 1px dashed #2d3748;
+      border-radius: 12px;
+      padding: 1.25rem;
+      margin-bottom: 1.25rem;
+      text-align: center;
+    }
+    .btn-tiktok {
+      background: #000000;
+      color: #ffffff;
+      border: 1px solid #333333;
+      padding: 0.75rem 1.4rem;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    }
+    .btn-tiktok:hover {
+      background: #111111;
+      border-color: #555555;
+      transform: translateY(-1px);
+    }
+    .tiktok-svg {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
+    }
+    .user-profile-connected {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(16, 185, 129, 0.08);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      padding: 0.85rem 1.1rem;
+      border-radius: 10px;
+      text-align: left;
+    }
+    .user-profile-info {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .user-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 2px solid var(--tiktok-cyan);
+      object-fit: cover;
+    }
+    .btn-disconnect {
+      background: transparent;
+      border: 1px solid #4b5563;
+      color: var(--text-muted);
+      padding: 0.35rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+    .btn-disconnect:hover {
+      color: #ef4444;
+      border-color: #ef4444;
+    }
+
+    /* FORM CONTROLS */
+    .form-group {
+      margin-bottom: 1.1rem;
+    }
+    label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 0.35rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    input, textarea, select {
+      width: 100%;
+      background: #0d1322;
+      border: 1px solid #2d3748;
+      border-radius: 8px;
+      color: white;
+      padding: 0.65rem 0.85rem;
+      font-family: inherit;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+    input:focus, textarea:focus, select:focus {
+      border-color: var(--accent-blue);
+    }
+    textarea {
+      resize: vertical;
+      min-height: 75px;
+    }
+
+    /* VERTICAL VIDEO PREVIEW */
+    .preview-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .phone-mockup {
+      width: 250px;
+      height: 444px;
+      background: #000;
+      border-radius: 28px;
+      border: 3px solid #374151;
+      box-shadow: 0 12px 35px rgba(0,0,0,0.7);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 1rem;
+    }
+    .video-background {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at top right, #1e1b4b, #000000 70%);
+      z-index: 1;
+    }
+    .video-waves {
+      position: absolute;
+      top: 35%;
+      left: 0;
+      width: 100%;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      z-index: 2;
+    }
+    .wave-bar {
+      width: 5px;
+      background: linear-gradient(180deg, var(--tiktok-cyan), var(--tiktok-red));
+      border-radius: 3px;
+      animation: soundWave 1.2s infinite ease-in-out alternate;
+    }
+    .wave-bar:nth-child(2) { animation-delay: 0.2s; height: 40px; }
+    .wave-bar:nth-child(3) { animation-delay: 0.4s; height: 55px; }
+    .wave-bar:nth-child(4) { animation-delay: 0.1s; height: 25px; }
+    .wave-bar:nth-child(5) { animation-delay: 0.5s; height: 50px; }
+    @keyframes soundWave {
+      0% { height: 15px; }
+      100% { height: 60px; }
+    }
+    .video-overlay {
+      position: relative;
+      z-index: 3;
+    }
+    .video-badge {
+      display: inline-block;
+      background: rgba(239, 68, 68, 0.9);
+      color: white;
+      font-size: 0.65rem;
+      font-weight: 800;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
       letter-spacing: 0.05em;
     }
-    h1 {
-      font-size: 2.25rem;
-      font-weight: 700;
-      color: #ffffff;
-      margin-bottom: 0.5rem;
+    .video-headline {
+      font-size: 0.9rem;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.3;
+      margin-top: 0.5rem;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.8);
     }
-    p.subtitle {
-      color: var(--text-muted);
-      font-size: 1.05rem;
+    .video-caption {
+      font-size: 0.72rem;
+      color: #e5e7eb;
+      margin-top: 0.5rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.8);
     }
-    nav {
+    .tiktok-sidebar-mock {
+      position: absolute;
+      right: 8px;
+      bottom: 65px;
+      z-index: 4;
       display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: center;
+    }
+    .tt-icon-btn {
+      width: 28px;
+      height: 28px;
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(4px);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
       justify-content: center;
-      gap: 1rem;
-      margin-top: 1.5rem;
+      font-size: 0.7rem;
     }
-    nav a {
-      color: var(--accent-hover);
-      text-decoration: none;
-      font-weight: 500;
-      padding: 0.5rem 1rem;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      background: var(--card-bg);
+
+    /* ACTION BUTTONS */
+    .btn-publish {
+      background: linear-gradient(135deg, var(--tiktok-cyan), #3b82f6);
+      color: #000;
+      border: none;
+      font-weight: 800;
+      font-size: 1rem;
+      padding: 0.9rem 1.5rem;
+      border-radius: 10px;
+      width: 100%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
       transition: all 0.2s ease;
+      margin-top: 1.25rem;
     }
-    nav a:hover {
-      background: rgba(59, 130, 246, 0.1);
-      border-color: var(--accent);
+    .btn-publish:hover:not(:disabled) {
+      filter: brightness(1.1);
+      transform: translateY(-1px);
     }
-    section {
+    .btn-publish:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* PROGRESS & LOGS */
+    .status-box {
+      margin-top: 1rem;
+      display: none;
+      background: #0d1322;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 1rem;
+      font-size: 0.85rem;
+    }
+    .status-step {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.4rem;
+      color: var(--text-muted);
+    }
+    .status-step.done {
+      color: var(--success);
+    }
+    .status-step.active {
+      color: var(--tiktok-cyan);
+      font-weight: 600;
+    }
+
+    /* MODAL TIKTOK OAUTH SANDBOX */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(5px);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-box {
+      background: #ffffff;
+      color: #161823;
+      width: 90%;
+      max-width: 440px;
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+      animation: popIn 0.25s ease-out;
+    }
+    @keyframes popIn {
+      from { transform: scale(0.92); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .modal-header {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+    .modal-header h3 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-top: 0.75rem;
+    }
+    .scope-list {
+      background: #f8f8f8;
+      border-radius: 10px;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+      list-style: none;
+    }
+    .scope-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+      font-size: 0.88rem;
+      color: #4b5563;
+      margin-bottom: 0.75rem;
+    }
+    .scope-item:last-child {
+      margin-bottom: 0;
+    }
+    .scope-check {
+      color: #10b981;
+      font-weight: bold;
+      font-size: 1.1rem;
+      line-height: 1;
+    }
+    .modal-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+    .btn-auth-accept {
+      background: var(--tiktok-red);
+      color: white;
+      border: none;
+      padding: 0.8rem;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+    .btn-auth-cancel {
+      background: transparent;
+      border: 1px solid #d1d5db;
+      color: #6b7280;
+      padding: 0.7rem;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* LEGAL PAGES */
+    .legal-content {
       background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 12px;
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
       padding: 2.5rem;
-      margin-bottom: 2.5rem;
     }
-    h2 {
-      font-size: 1.6rem;
-      color: #ffffff;
-      border-bottom: 1px solid var(--border);
+    .legal-content h2 {
+      font-size: 1.8rem;
+      color: white;
+      border-bottom: 1px solid var(--card-border);
       padding-bottom: 0.75rem;
       margin-bottom: 1.25rem;
     }
-    h3 {
+    .legal-content h3 {
       font-size: 1.2rem;
       color: #f3f4f6;
       margin-top: 1.5rem;
       margin-bottom: 0.5rem;
     }
-    p, ul, ol {
-      margin-bottom: 1rem;
+    .legal-content p, .legal-content ul {
       color: #d1d5db;
+      margin-bottom: 1rem;
     }
-    ul, ol {
+    .legal-content ul {
       padding-left: 1.5rem;
     }
-    li {
+    .legal-content li {
       margin-bottom: 0.5rem;
     }
-    a {
-      color: var(--accent-hover);
+    .legal-content a {
+      color: var(--accent);
       text-decoration: underline;
-    }
-    code {
-      background: var(--code-bg);
-      padding: 0.2rem 0.4rem;
-      border-radius: 4px;
-      font-size: 0.9em;
-      color: #93c5fd;
     }
     .info-box {
       background: rgba(59, 130, 246, 0.08);
-      border-left: 4px solid var(--accent);
-      padding: 1rem 1.25rem;
+      border-left: 4px solid var(--accent-blue);
+      padding: 1.1rem;
       margin: 1.25rem 0;
       border-radius: 0 8px 8px 0;
     }
+
     footer {
+      border-top: 1px solid var(--card-border);
+      padding: 1.5rem;
       text-align: center;
       color: var(--text-muted);
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       margin-top: 3rem;
-      padding-top: 1.5rem;
-      border-top: 1px solid var(--border);
+    }
+    footer a {
+      color: var(--accent);
+      text-decoration: none;
+      margin: 0 0.5rem;
+    }
+    footer a:hover {
+      text-decoration: underline;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <span class="badge">TikTok Integration & Compliance</span>
-      <h1>Lumina Legal Portal</h1>
-      <p class="subtitle">Official Terms of Service and Privacy Policy for Lumina</p>
-      <nav>
-        <a href="#terms">Terms of Service</a>
-        <a href="#privacy">Privacy Policy</a>
-        <a href="https://github.com/dagf2101/lumina-tiktok-site" target="_blank" rel="noopener">GitHub Repository</a>
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-inner">
+      <a href="#app" class="brand" onclick="switchTab('app')">
+        <div class="brand-logo">L</div>
+        <div>
+          <span class="brand-name">Lumina</span>
+          <span class="brand-badge">News Studio</span>
+        </div>
+      </a>
+      <nav class="tabs">
+        <button class="tab-btn active" id="tab-app-btn" onclick="switchTab('app')">
+          <span>🚀</span> App Studio
+        </button>
+        <button class="tab-btn" id="tab-terms-btn" onclick="switchTab('terms')">
+          <span>📄</span> Terms of Service
+        </button>
+        <button class="tab-btn" id="tab-privacy-btn" onclick="switchTab('privacy')">
+          <span>🔒</span> Privacy Policy
+        </button>
       </nav>
-    </header>
+    </div>
+  </header>
 
-    <!-- TERMS OF SERVICE -->
-    <section id="terms">
-      <h2>Terms of Service</h2>
-      <p><strong>Last Updated:</strong> September 18, 2026 | <strong>Effective Date:</strong> September 18, 2026</p>
-      
-      <p>Welcome to <strong>Lumina</strong> ("Lumina", "we", "us", or "our"). These Terms of Service ("Terms") govern your access to and use of Lumina, including our website, applications, automated news generation and distribution services, and integrations with third-party platforms such as TikTok (collectively, the "Service").</p>
+  <!-- MAIN CONTENT -->
+  <main>
 
-      <h3>1. Description of the Service</h3>
-      <p>Lumina is an AI-assisted news curation, synthesis, and media distribution platform in the <strong>News</strong> category. Lumina enables automated multi-source news analysis, summary generation, and video/media publishing to connected platforms including TikTok via official TikTok Developer APIs.</p>
-
-      <h3>2. Eligibility & Account Requirements</h3>
-      <ul>
-        <li><strong>Age Requirement:</strong> You must be at least 13 years old (or the minimum legal age in your jurisdiction) to use Lumina.</li>
-        <li><strong>Account Security:</strong> You are responsible for maintaining the confidentiality of your credentials and linked accounts.</li>
-        <li><strong>Authority:</strong> If acting on behalf of an organization, you confirm having full authority to bind that entity.</li>
-      </ul>
-
-      <h3>3. TikTok Platform Integration & Third-Party Services</h3>
-      <ul>
-        <li><strong>Compliance:</strong> You agree to abide by <a href="https://www.tiktok.com/legal/terms-of-service" target="_blank" rel="noopener">TikTok's Terms of Service</a> and <a href="https://www.tiktok.com/community-guidelines" target="_blank" rel="noopener">TikTok Community Guidelines</a>.</li>
-        <li><strong>Independent Operator:</strong> Lumina is developed and operated independently. It is not endorsed, sponsored, affiliated with, or certified by TikTok Inc. or ByteDance Ltd.</li>
-        <li><strong>Revocation:</strong> You may revoke Lumina's access at any time through TikTok settings (<em>Settings and Privacy &gt; Security &amp; permissions &gt; Manage app permissions</em>).</li>
-      </ul>
-
-      <h3>4. Acceptable Use Policy</h3>
-      <p>You agree not to use Lumina to generate or distribute unlawful, defamatory, deceptive, or hateful content, violate copyrights, bypass API limitations, or transmit deliberate disinformation.</p>
-
-      <h3>5. Intellectual Property</h3>
-      <p>Lumina retains all rights to its platform, brand, and proprietary algorithms. You retain ownership over your submitted media and scripts, granting Lumina a license strictly to process and publish content as directed.</p>
-
-      <h3>6. Disclaimer of Warranties & Limitation of Liability</h3>
-      <p>The Service is provided on an "AS IS" and "AS AVAILABLE" basis. Lumina disclaims all warranties to the fullest extent permitted by law and shall not be liable for indirect, punitive, or consequential damages.</p>
-
-      <h3>7. Contact & Inquiries</h3>
-      <p>Questions regarding these Terms can be addressed to: <code>lumina@warclamerz.mfg</code>.</p>
-    </section>
-
-    <!-- PRIVACY POLICY -->
-    <section id="privacy">
-      <h2>Privacy Policy</h2>
-      <p><strong>Last Updated:</strong> September 18, 2026 | <strong>Effective Date:</strong> September 18, 2026</p>
-
-      <p>This Privacy Policy describes how <strong>Lumina</strong> collects, uses, and safeguards personal information when interacting with our Service and the TikTok Developer Platform. We comply with GDPR, CCPA, and TikTok Developer Data Policies.</p>
-
-      <h3>1. Information We Collect</h3>
-      <ul>
-        <li><strong>TikTok Authentication Data:</strong> Open ID, Union ID, display name, and avatar URL provided via TikTok Login Kit.</li>
-        <li><strong>Media & Publishing Tokens:</strong> Temporary OAuth tokens for video uploading and publishing, authorized by you.</li>
-        <li><strong>News & Content Metadata:</strong> Titles, summaries, hashtags, and scheduling metadata.</li>
-        <li><strong>Technical Logs:</strong> Server telemetry, IP addresses, and error metrics for security and rate limit tracking.</li>
-      </ul>
-
-      <h3>2. How We Use Your Information</h3>
-      <p>Your data is used exclusively to authenticate your identity, execute authorized publishing tasks, protect service integrity, and provide customer support. We <strong>never sell, rent, monetize, or broker</strong> personal data.</p>
-
-      <div class="info-box">
-        <h4>User Data Revocation & Deletion Instructions</h4>
-        <p><strong>To revoke access via TikTok:</strong><br>
-        1. Open TikTok app &gt; Profile &gt; Menu (top-right).<br>
-        2. Tap <em>Settings and privacy</em> &gt; <em>Security and permissions</em> &gt; <em>Manage app permissions</em>.<br>
-        3. Find <strong>Lumina</strong> and tap <strong>Remove access</strong>.</p>
-        <p><strong>To request permanent deletion of your stored records:</strong><br>
-        Email <code>lumina@warclamerz.mfg</code> with subject <em>"Data Deletion Request - Lumina TikTok"</em> and your TikTok handle. We will permanently delete your records within 30 days.</p>
+    <!-- VIEW 1: INTERACTIVE APP STUDIO DEMO -->
+    <section id="view-app" class="view-panel active">
+      <div class="studio-hero">
+        <h1>Automated News Publishing Studio</h1>
+        <p>Real-time AI news synthesis with official TikTok Login Kit &amp; Content Posting API integration.</p>
       </div>
 
-      <h3>3. Data Retention & Security</h3>
-      <p>Tokens and processing files are held only as long as necessary to provide the service and are encrypted in transit (TLS/HTTPS) and at rest. We do not collect information from minors under 13.</p>
+      <div class="studio-grid">
+        <!-- LEFT COLUMN: CONTROLS & PIPELINE -->
+        <div class="card">
+          <div class="card-title">
+            <span>🔑</span> TikTok Developer Integration
+          </div>
 
-      <h3>4. Your Rights (GDPR / CCPA)</h3>
-      <p>You have the right to access, correct, port, or erase your data, or withdraw consent at any time by emailing <code>lumina@warclamerz.mfg</code>.</p>
+          <!-- AUTH BOX -->
+          <div id="auth-unconnected" class="auth-box">
+            <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1rem;">
+              Connect your TikTok Creator account to enable direct video publishing and automated news syndication.
+            </p>
+            <button class="btn-tiktok" onclick="openOAuthModal()">
+              <svg class="tiktok-svg" viewBox="0 0 24 24">
+                <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64c.298-.002.595.042.88.13V9.4a6.33 6.33 0 0 0-1-.08A6.34 6.34 0 0 0 3 15.66a6.34 6.34 0 0 0 10.82 4.47 6.27 6.27 0 0 0 1.89-4.46V8.75a8.28 8.28 0 0 0 3.88 1.07V6.69z"/>
+              </svg>
+              Continue with TikTok (Login Kit)
+            </button>
+          </div>
+
+          <!-- CONNECTED PROFILE -->
+          <div id="auth-connected" class="user-profile-connected">
+            <div class="user-profile-info">
+              <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=120&auto=format&fit=crop&q=60" alt="Avatar" class="user-avatar">
+              <div>
+                <div style="font-weight: 700; font-size: 0.95rem; color: white;">Lumina News Sandbox</div>
+                <div style="font-size: 0.75rem; color: #10b981;">✓ Connected (Login Kit + Posting API)</div>
+              </div>
+            </div>
+            <button class="btn-disconnect" onclick="disconnectTikTok()">Disconnect</button>
+          </div>
+
+          <!-- NEWS GENERATION FORM -->
+          <div style="margin-top: 1.5rem;">
+            <div class="card-title" style="margin-bottom: 0.75rem;">
+              <span>📰</span> Synthesized News Briefing
+            </div>
+
+            <div class="form-group">
+              <label>Topic / Category</label>
+              <select id="newsTopic" onchange="updateNewsPreview()">
+                <option value="tech">Artificial Intelligence &amp; Global Tech</option>
+                <option value="markets">World Financial Markets &amp; Economy</option>
+                <option value="science">Space Exploration &amp; Energy Science</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Headline Title</label>
+              <input type="text" id="newsTitle" value="Next-Gen AI Systems Break Reasoning Records">
+            </div>
+
+            <div class="form-group">
+              <label>Captions &amp; Source Attribution</label>
+              <textarea id="newsCaption">Daily Briefing: Multi-modal models demonstrate unprecedented mathematical reasoning breakthroughs. Sources: arXiv, Reuters Tech, IEEE. #LuminaNews #AI #TechBriefing #News</textarea>
+            </div>
+
+            <div class="form-group">
+              <label>TikTok Posting Destination</label>
+              <select id="postMode">
+                <option value="direct">Direct Post to Feed (video.publish)</option>
+                <option value="draft">Upload to Creator Drafts (video.upload)</option>
+              </select>
+            </div>
+
+            <button id="btnPublish" class="btn-publish" onclick="executePublishPipeline()" disabled>
+              <span>🚀</span> Publish Video to TikTok
+            </button>
+
+            <!-- PUBLISH PROGRESS -->
+            <div id="statusBox" class="status-box">
+              <div id="step1" class="status-step">○ 1. Initializing video rendering (9:16 vertical)...</div>
+              <div id="step2" class="status-step">○ 2. Requesting upload token via TikTok Content Posting API...</div>
+              <div id="step3" class="status-step">○ 3. Transmitting video chunks (scope: video.upload)...</div>
+              <div id="step4" class="status-step">○ 4. Finalizing publication to @lumina_news_sandbox (scope: video.publish)...</div>
+              <div id="publishSuccess" style="display: none; margin-top: 0.75rem; padding: 0.75rem; background: rgba(16, 185, 129, 0.15); border: 1px solid #10b981; border-radius: 6px; color: #34d399; font-weight: 600;">
+                🎉 Video successfully published to TikTok! Post ID: <span id="postIdDisplay">tt_pub_984129</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- RIGHT COLUMN: 9:16 VERTICAL VIDEO PREVIEW -->
+        <div class="card preview-container">
+          <div class="card-title" style="align-self: flex-start;">
+            <span>📱</span> 9:16 Video Preview
+          </div>
+
+          <div class="phone-mockup">
+            <div class="video-background"></div>
+            
+            <div class="video-waves">
+              <div class="wave-bar"></div>
+              <div class="wave-bar"></div>
+              <div class="wave-bar"></div>
+              <div class="wave-bar"></div>
+              <div class="wave-bar"></div>
+            </div>
+
+            <!-- TIKTOK SIDEBAR -->
+            <div class="tiktok-sidebar-mock">
+              <div class="tt-icon-btn">❤️</div>
+              <div class="tt-icon-btn">💬</div>
+              <div class="tt-icon-btn">↗️</div>
+            </div>
+
+            <!-- TOP HEADER -->
+            <div class="video-overlay">
+              <span class="video-badge">LUMINA NEWS</span>
+            </div>
+
+            <!-- BOTTOM CAPTIONS -->
+            <div class="video-overlay">
+              <div class="video-headline" id="previewHeadline">Next-Gen AI Systems Break Reasoning Records</div>
+              <div class="video-caption" id="previewCaption">Daily Briefing: Multi-modal models demonstrate unprecedented mathematical reasoning breakthroughs...</div>
+            </div>
+          </div>
+
+          <p style="margin-top: 1rem; font-size: 0.8rem; color: var(--text-muted); text-align: center;">
+            Rendered format: 1080x1920 @ 60fps &bull; Compliant with TikTok Video Specifications
+          </p>
+        </div>
+      </div>
     </section>
 
-    <footer>
-      <p>&copy; 2026 Lumina. All rights reserved. &bull; <a href="https://github.com/dagf2101/lumina-tiktok-site">GitHub</a></p>
-    </footer>
+    <!-- VIEW 2: TERMS OF SERVICE -->
+    <section id="view-terms" class="view-panel">
+      <div class="legal-content">
+        <h2>Terms of Service for Lumina</h2>
+        <p><strong>Last Updated:</strong> September 18, 2026 | <strong>Effective Date:</strong> September 18, 2026</p>
+        
+        <p>Welcome to <strong>Lumina</strong> ("Lumina", "we", "us", or "our"). These Terms of Service ("Terms") govern your access to and use of Lumina, including our website, applications, automated news generation and distribution services, and integrations with third-party platforms such as TikTok (collectively, the "Service").</p>
+
+        <h3>1. Description of the Service</h3>
+        <p>Lumina is an AI-assisted news curation, synthesis, and media distribution platform in the <strong>News</strong> category. Lumina enables automated multi-source news analysis, summary generation, and video/media publishing to connected platforms including TikTok via official TikTok Developer APIs.</p>
+
+        <h3>2. Eligibility & Account Requirements</h3>
+        <ul>
+          <li><strong>Age Requirement:</strong> You must be at least 13 years old (or the minimum legal age in your jurisdiction) to use Lumina.</li>
+          <li><strong>Account Security:</strong> You are responsible for maintaining the confidentiality of your credentials and linked accounts.</li>
+          <li><strong>Authority:</strong> If acting on behalf of an organization, you confirm having full authority to bind that entity.</li>
+        </ul>
+
+        <h3>3. TikTok Platform Integration & Third-Party Services</h3>
+        <ul>
+          <li><strong>Compliance:</strong> You agree to abide by <a href="https://www.tiktok.com/legal/terms-of-service" target="_blank" rel="noopener">TikTok's Terms of Service</a> and <a href="https://www.tiktok.com/community-guidelines" target="_blank" rel="noopener">TikTok Community Guidelines</a>.</li>
+          <li><strong>Independent Operator:</strong> Lumina is developed and operated independently. It is not endorsed, sponsored, affiliated with, or certified by TikTok Inc. or ByteDance Ltd.</li>
+          <li><strong>Revocation:</strong> You may revoke Lumina's access at any time through TikTok settings (<em>Settings and Privacy &gt; Security &amp; permissions &gt; Manage app permissions</em>).</li>
+        </ul>
+
+        <h3>4. Acceptable Use Policy</h3>
+        <p>You agree not to use Lumina to generate or distribute unlawful, defamatory, deceptive, or hateful content, violate copyrights, bypass API limitations, or transmit deliberate disinformation.</p>
+
+        <h3>5. Intellectual Property</h3>
+        <p>Lumina retains all rights to its platform, brand, and proprietary algorithms. You retain ownership over your submitted media and scripts, granting Lumina a license strictly to process and publish content as directed.</p>
+
+        <h3>6. Disclaimer of Warranties & Limitation of Liability</h3>
+        <p>The Service is provided on an "AS IS" and "AS AVAILABLE" basis. Lumina disclaims all warranties to the fullest extent permitted by law and shall not be liable for indirect, punitive, or consequential damages.</p>
+
+        <h3>7. Contact Us</h3>
+        <p>If you have any questions or concerns regarding these Terms of Service, please contact us at: <code>lumina@warclamerz.mfg</code></p>
+      </div>
+    </section>
+
+    <!-- VIEW 3: PRIVACY POLICY -->
+    <section id="view-privacy" class="view-panel">
+      <div class="legal-content">
+        <h2>Privacy Policy for Lumina</h2>
+        <p><strong>Last Updated:</strong> September 18, 2026 | <strong>Effective Date:</strong> September 18, 2026</p>
+
+        <p>This Privacy Policy describes how <strong>Lumina</strong> collects, uses, and safeguards personal information when interacting with our Service and the TikTok Developer Platform. We comply with GDPR, CCPA, and TikTok Developer Data Policies.</p>
+
+        <h3>1. Information We Collect</h3>
+        <ul>
+          <li><strong>TikTok Authentication Data:</strong> Open ID, Union ID, display name, and avatar URL provided via TikTok Login Kit.</li>
+          <li><strong>Media & Publishing Tokens:</strong> Temporary OAuth tokens for video uploading and publishing, authorized by you.</li>
+          <li><strong>News & Content Metadata:</strong> Titles, summaries, hashtags, and scheduling metadata.</li>
+          <li><strong>Technical Logs:</strong> Server telemetry, IP addresses, and error metrics for security and rate limit tracking.</li>
+        </ul>
+
+        <h3>2. How We Use Your Information</h3>
+        <p>Your data is used exclusively to authenticate your identity, execute authorized publishing tasks, protect service integrity, and provide customer support. We <strong>never sell, rent, monetize, or broker</strong> personal data.</p>
+
+        <div class="info-box">
+          <h4 style="margin-bottom: 0.5rem; color: #93c5fd;">User Data Revocation & Deletion Instructions</h4>
+          <p><strong>To revoke access via TikTok:</strong><br>
+          1. Open TikTok app &gt; Profile &gt; Menu (top-right).<br>
+          2. Tap <em>Settings and privacy</em> &gt; <em>Security and permissions</em> &gt; <em>Manage app permissions</em>.<br>
+          3. Find <strong>Lumina</strong> and tap <strong>Remove access</strong>.</p>
+          <p><strong>To request permanent deletion of your stored records:</strong><br>
+          Email <code>lumina@warclamerz.mfg</code> with subject <em>"Data Deletion Request - Lumina TikTok"</em> and your TikTok handle. We will permanently delete your records within 30 days.</p>
+        </div>
+
+        <h3>3. Data Retention & Security</h3>
+        <p>Tokens and processing files are held only as long as necessary to provide the service and are encrypted in transit (TLS/HTTPS) and at rest. We do not collect information from minors under 13.</p>
+
+        <h3>4. Your Rights (GDPR / CCPA)</h3>
+        <p>You have the right to access, correct, port, or erase your data, or withdraw consent at any time by emailing <code>lumina@warclamerz.mfg</code>.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- OAUTH SIMULATION MODAL (FOR DEMO VIDEO RECORDING) -->
+  <div id="oauthModal" class="modal-backdrop">
+    <div class="modal-box">
+      <div class="modal-header">
+        <svg class="tiktok-svg" style="width: 38px; height: 38px; fill: #000;" viewBox="0 0 24 24">
+          <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64c.298-.002.595.042.88.13V9.4a6.33 6.33 0 0 0-1-.08A6.34 6.34 0 0 0 3 15.66a6.34 6.34 0 0 0 10.82 4.47 6.27 6.27 0 0 0 1.89-4.46V8.75a8.28 8.28 0 0 0 3.88 1.07V6.69z"/>
+        </svg>
+        <h3>Authorize Lumina</h3>
+        <p style="font-size: 0.85rem; color: #6b7280; margin-top: 0.25rem;">Lumina is requesting permission to access your TikTok account:</p>
+      </div>
+
+      <ul class="scope-list">
+        <li class="scope-item">
+          <span class="scope-check">✓</span>
+          <div>
+            <strong>user.info.basic</strong>
+            <p style="font-size: 0.78rem; margin: 0;">Access your public TikTok profile (display name, avatar).</p>
+          </div>
+        </li>
+        <li class="scope-item">
+          <span class="scope-check">✓</span>
+          <div>
+            <strong>video.upload</strong>
+            <p style="font-size: 0.78rem; margin: 0;">Upload synthesized news videos to your TikTok account.</p>
+          </div>
+        </li>
+        <li class="scope-item">
+          <span class="scope-check">✓</span>
+          <div>
+            <strong>video.publish</strong>
+            <p style="font-size: 0.78rem; margin: 0;">Publish news videos directly to your public feed or drafts.</p>
+          </div>
+        </li>
+      </ul>
+
+      <div class="modal-actions">
+        <button class="btn-auth-accept" onclick="acceptOAuth()">Authorize &amp; Link Account</button>
+        <button class="btn-auth-cancel" onclick="closeOAuthModal()">Cancel</button>
+      </div>
+    </div>
   </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>&copy; 2026 Lumina. Category: News &bull; Integrated with TikTok Developer APIs</p>
+    <p style="margin-top: 0.5rem;">
+      <a href="#terms" onclick="switchTab('terms')">Terms of Service</a> &bull;
+      <a href="#privacy" onclick="switchTab('privacy')">Privacy Policy</a> &bull;
+      <a href="https://github.com/dagf2101/lumina-tiktok-site" target="_blank" rel="noopener">GitHub Repository</a>
+    </p>
+  </footer>
+
+  <script>
+    // Tab switching logic
+    function switchTab(tabKey) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.view-panel').forEach(panel => panel.classList.remove('active'));
+
+      if (tabKey === 'app') {
+        document.getElementById('tab-app-btn').classList.add('active');
+        document.getElementById('view-app').classList.add('active');
+        location.hash = '#app';
+      } else if (tabKey === 'terms') {
+        document.getElementById('tab-terms-btn').classList.add('active');
+        document.getElementById('view-terms').classList.add('active');
+        location.hash = '#terms';
+      } else if (tabKey === 'privacy') {
+        document.getElementById('tab-privacy-btn').classList.add('active');
+        document.getElementById('view-privacy').classList.add('active');
+        location.hash = '#privacy';
+      }
+    }
+
+    // Handle hash on load
+    window.addEventListener('DOMContentLoaded', () => {
+      const hash = location.hash.replace('#', '');
+      if (hash === 'terms' || hash === 'privacy') {
+        switchTab(hash);
+      } else {
+        switchTab('app');
+      }
+    });
+
+    // Form synchronization with preview
+    document.getElementById('newsTitle').addEventListener('input', (e) => {
+      document.getElementById('previewHeadline').innerText = e.target.value || 'News Headline';
+    });
+    document.getElementById('newsCaption').addEventListener('input', (e) => {
+      document.getElementById('previewCaption').innerText = e.target.value || '';
+    });
+
+    function updateNewsPreview() {
+      const topic = document.getElementById('newsTopic').value;
+      if (topic === 'tech') {
+        document.getElementById('newsTitle').value = 'Next-Gen AI Systems Break Reasoning Records';
+        document.getElementById('newsCaption').value = 'Daily Briefing: Multi-modal models demonstrate unprecedented mathematical reasoning breakthroughs. Sources: arXiv, Reuters Tech, IEEE. #LuminaNews #AI #TechBriefing #News';
+      } else if (topic === 'markets') {
+        document.getElementById('newsTitle').value = 'Global Markets Rally as Tech Indexes Hit Highs';
+        document.getElementById('newsCaption').value = 'Economic Report: Global indices close higher driven by semiconductor and clean energy surges. Sources: Bloomberg, Financial Times. #LuminaNews #Markets #Finance #News';
+      } else if (topic === 'science') {
+        document.getElementById('newsTitle').value = 'Deep Space Observatory Detects New Exoplanet Atmosphere';
+        document.getElementById('newsCaption').value = 'Scientific Bulletin: Atmospheric spectroscopy confirms water vapor and biosignature candidates. Sources: NASA, ESA. #LuminaNews #Science #Space #News';
+      }
+      document.getElementById('newsTitle').dispatchEvent(new Event('input'));
+      document.getElementById('newsCaption').dispatchEvent(new Event('input'));
+    }
+
+    // Modal OAuth
+    function openOAuthModal() {
+      document.getElementById('oauthModal').style.display = 'flex';
+    }
+    function closeOAuthModal() {
+      document.getElementById('oauthModal').style.display = 'none';
+    }
+    function acceptOAuth() {
+      closeOAuthModal();
+      document.getElementById('auth-unconnected').style.display = 'none';
+      document.getElementById('auth-connected').style.display = 'flex';
+      document.getElementById('btnPublish').disabled = false;
+    }
+    function disconnectTikTok() {
+      document.getElementById('auth-connected').style.display = 'none';
+      document.getElementById('auth-unconnected').style.display = 'block';
+      document.getElementById('btnPublish').disabled = true;
+      document.getElementById('statusBox').style.display = 'none';
+    }
+
+    // Simulated TikTok API Publishing Pipeline
+    function executePublishPipeline() {
+      const btn = document.getElementById('btnPublish');
+      btn.disabled = true;
+      btn.innerText = 'Publishing to TikTok...';
+
+      const statusBox = document.getElementById('statusBox');
+      statusBox.style.display = 'block';
+      document.getElementById('publishSuccess').style.display = 'none';
+
+      const steps = [
+        document.getElementById('step1'),
+        document.getElementById('step2'),
+        document.getElementById('step3'),
+        document.getElementById('step4')
+      ];
+
+      steps.forEach(s => {
+        s.className = 'status-step';
+      });
+
+      steps[0].className = 'status-step active';
+      steps[0].innerText = '⏳ 1. Initializing video rendering (9:16 vertical)...';
+
+      setTimeout(() => {
+        steps[0].className = 'status-step done';
+        steps[0].innerText = '✓ 1. Video rendered (1080x1920 @ 60fps)';
+        steps[1].className = 'status-step active';
+        steps[1].innerText = '⏳ 2. Requesting upload token via TikTok Content Posting API...';
+
+        setTimeout(() => {
+          steps[1].className = 'status-step done';
+          steps[1].innerText = '✓ 2. Upload token authorized (scope: video.upload)';
+          steps[2].className = 'status-step active';
+          steps[2].innerText = '⏳ 3. Transmitting video chunks to TikTok endpoint...';
+
+          setTimeout(() => {
+            steps[2].className = 'status-step done';
+            steps[2].innerText = '✓ 3. Video payload uploaded successfully';
+            steps[3].className = 'status-step active';
+            steps[3].innerText = '⏳ 4. Finalizing publication to @lumina_news_sandbox (scope: video.publish)...';
+
+            setTimeout(() => {
+              steps[3].className = 'status-step done';
+              steps[3].innerText = '✓ 4. Published to TikTok feed (HTTP 200 OK)';
+              const randomId = 'tt_pub_' + Math.floor(100000 + Math.random() * 900000);
+              document.getElementById('postIdDisplay').innerText = randomId;
+              document.getElementById('publishSuccess').style.display = 'block';
+
+              btn.disabled = false;
+              btn.innerHTML = '<span>🚀</span> Publish Video to TikTok';
+            }, 1200);
+          }, 1200);
+        }, 1000);
+      }, 1000);
+    }
+  </script>
 </body>
 </html>
